@@ -2,8 +2,14 @@ Scene(
     shininess: 20.0,
     antialias: 3,
     background: Vec3(0.0, 0.0, 0.0),
-    maxdepth: 17,
+    max_depth: 17,
     resolution: (800, 800),
+    camera: Camera (
+        position: Vec3(0, 0, 0),
+        near: 1.0,
+        far: 1000.0,
+        fov: 90.0,
+    ),
     lights: [
         Light(position: Vec3(10, 10, 100), diffuse: Vec3(25, 25, 25), specular: Vec3(255, 255, 255)),
         Light(position: Vec3(-100, 10, -10), diffuse: Vec3(255, 255, 255), specular: Vec3(255, 255, 255)),

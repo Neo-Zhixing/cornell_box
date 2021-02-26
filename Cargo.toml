@@ -9,7 +9,12 @@ edition = "2018"
 [dependencies]
 ron = "0.6"
 serde = "1"
+rayon = "1.5"
 
 [dependencies.glam]
 version = "0.12.0"
 features = ["serde"]
+
+[dependencies.image]
+version = "0.23"
+features = ["tiff"]

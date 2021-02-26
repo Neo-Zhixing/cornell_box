@@ -30,14 +30,23 @@ pub struct Quad {
 
 #[derive(Debug, Deserialize)]
 pub struct Scene {
-    shininess: f32,
-    antialias: u32,
-    background: Vec3,
-    maxdepth: u32,
-    resolution: (u32, u32),
-    lights: Vec<Light>,
-    spheres: Vec<Sphere>,
-    quads: Vec<Quad>,
+    pub shininess: f32,
+    pub antialias: u32,
+    pub background: Vec3,
+    pub max_depth: u32,
+    pub resolution: (u32, u32),
+    pub lights: Vec<Light>,
+    pub spheres: Vec<Sphere>,
+    pub quads: Vec<Quad>,
+    pub camera: Camera,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Camera {
+    pub position: Vec3,
+    pub near: f32,
+    pub far: f32,
+    pub fov: f32,
 }
 
 impl Scene {
