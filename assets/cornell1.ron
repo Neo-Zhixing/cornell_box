@@ -1,0 +1,83 @@
+Scene(
+    shininess: 20.0,
+    antialias: 3,
+    background: Vec3(0.0, 0.0, 0.0),
+    maxdepth: 17,
+    resolution: (800, 800),
+    lights: [
+        Light(position: Vec3(10, 10, 100), diffuse: Vec3(25, 25, 25), specular: Vec3(255, 255, 255)),
+        Light(position: Vec3(-100, 10, -10), diffuse: Vec3(255, 255, 255), specular: Vec3(255, 255, 255)),
+        Light(position: Vec3(-150, 150, -1000), diffuse: Vec3(150, 150, 150), specular: Vec3(50, 50, 50)),
+    ],
+    spheres: [
+        Sphere(
+            position: Vec3(0, 0, 0),
+            radius: 45,
+            diffuse: Vec3(255, 13, 13),
+            specular: Vec3(255, 255, 0),
+            ambient: Vec3(0, 0, 255),
+            mirror: true
+        ),
+        Sphere(
+            position: Vec3(0, 60, 75),
+            radius: 15,
+            diffuse: Vec3(128, 128, 128),
+            specular: Vec3(255, 0, 0),
+            ambient: Vec3(255, 0, 255),
+            mirror: true
+        ),
+        Sphere(
+            position: Vec3(0, 0, 105),
+            radius: 10,
+            diffuse: Vec3(13, 13, 13),
+            specular: Vec3(0, 255, 255),
+            ambient: Vec3(255, 0, 0),
+            mirror: true
+        ),
+        Sphere(
+            position: Vec3(0, -75, 15),
+            radius: 15,
+            diffuse: Vec3(13, 13, 13),
+            specular: Vec3(0, 255, 255),
+            ambient: Vec3(255, 0, 0),
+            mirror: true
+        )
+    ],
+    quads: [
+        Quad (
+            positions: (Vec3(-150, -150, 150), Vec3(150, -150, 150), Vec3(-150, 150, 150)),
+            diffuse: Vec3(25, 25, 25),
+            specular: Vec3(255, 255, 255),
+            ambient: Vec3(128, 128, 128),
+            is_diffuse: true,
+        ),
+        Quad (
+            positions: (Vec3(150, -150, 150), Vec3(150, -150, -150), Vec3(150, 150, 150)),
+            diffuse: Vec3(250, 250, 250),
+            specular: Vec3(255, 0, 0),
+            ambient: Vec3(128, 128, 128),
+            is_diffuse: true,
+        ),
+        Quad (
+            positions: (Vec3(-150, -150, -150), Vec3(-150, -150, 150), Vec3(-150, 150, -150)),
+            diffuse: Vec3(25, 25, 255),
+            specular: Vec3(255, 255, 255),
+            ambient: Vec3(128, 128, 128),
+            is_diffuse: true,
+        ),
+        Quad (
+            positions: (Vec3(-150, -150, 150), Vec3(150, -150, 150), Vec3(-150, -150, -150)),
+            diffuse: Vec3(25, 255, 25),
+            specular: Vec3(255, 255, 255),
+            ambient: Vec3(128, 128, 128),
+            is_diffuse: true,
+        ),
+        Quad (
+            positions: (Vec3(-150, 150, 150), Vec3(-150, 150, 150), Vec3(-150, 150, -150)),
+            diffuse: Vec3(255, 25, 25),
+            specular: Vec3(255, 255, 255),
+            ambient: Vec3(128, 128, 128),
+            is_diffuse: true,
+        ),
+    ]
+)
