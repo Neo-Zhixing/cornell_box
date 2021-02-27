@@ -5,6 +5,8 @@ use image::codecs::tiff::TiffEncoder;
 
 pub mod scene;
 pub mod renderer;
+pub mod primitive;
+
 
 fn main() {
     let file = File::open("./assets/cornell2.ron").unwrap();

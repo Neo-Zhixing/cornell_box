@@ -1,31 +1,15 @@
 use glam::Vec3;
 use std::io::{Read};
 use serde::Deserialize;
+use crate::primitive::{Sphere, Quad};
+
+
 
 #[derive(Debug, Deserialize)]
 pub struct Light {
     position: Vec3,
     diffuse: Vec3,
     specular: Vec3,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Sphere {
-    position: Vec3,
-    radius: f32,
-    diffuse: Vec3,
-    specular: Vec3,
-    ambient: Vec3,
-    mirror: bool
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Quad {
-    positions: [Vec3; 3],
-    diffuse: Vec3,
-    specular: Vec3,
-    ambient: Vec3,
-    is_diffuse: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -45,6 +29,7 @@ pub struct Scene {
 pub struct Camera {
     pub position: Vec3,
     pub near: f32,
+    pub direction: Vec3,
     pub far: f32,
     pub fov: f32,
 }
