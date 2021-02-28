@@ -7,9 +7,9 @@ use crate::primitive::{Sphere, Quad};
 
 #[derive(Debug, Deserialize)]
 pub struct Light {
-    position: Vec3,
-    diffuse: Vec3,
-    specular: Vec3,
+    pub position: Vec3,
+    pub diffuse: Vec3,
+    pub specular: Vec3,
 }
 
 #[derive(Debug, Deserialize)]

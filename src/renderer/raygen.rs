@@ -8,7 +8,7 @@ use crate::renderer::Ray;
 pub type Pixel = image::Rgba<u8>;
 
 pub fn raygen<F>(scene: &Scene, fragment: F) -> RgbaImage
-    where F: Fn(Ray) -> Pixel + Sync {
+    where F: Fn(Ray) -> Vec3 + Sync {
     let (width, height) = scene.resolution;
     let num_pixels = width * height;
     let mut data: Vec<Pixel> = (0..num_pixels)
@@ -44,7 +44,16 @@ pub fn raygen<F>(scene: &Scene, fragment: F) -> RgbaImage
                 origin: eye,
                 dir
             };
-            fragment(ray)
+            let color = fragment(ray);
+
+
+            let p = color * 255.0;
+            return image::Rgba([
+                p.x.round() as u8,
+                p.y.round() as u8,
+                p.z.round() as u8,
+                255
+            ]);
         })
         .collect();
     assert_eq!(data.len(), data.capacity());
