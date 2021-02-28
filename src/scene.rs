@@ -1,9 +1,7 @@
+use crate::primitive::{Quad, Sphere};
 use glam::Vec3;
-use std::io::{Read};
 use serde::Deserialize;
-use crate::primitive::{Sphere, Quad};
-
-
+use std::io::Read;
 
 #[derive(Debug, Deserialize)]
 pub struct Light {
@@ -34,6 +32,6 @@ pub struct Camera {
 
 impl Scene {
     pub fn parse<T: Read>(input: T) -> ron::Result<Self> {
-        return ron::de::from_reader(input)
+        return ron::de::from_reader(input);
     }
 }

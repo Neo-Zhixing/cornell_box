@@ -1,12 +1,11 @@
-use std::fs::File;
-use std::io::BufReader;
 use crate::renderer::render;
 use image::codecs::tiff::TiffEncoder;
+use std::fs::File;
+use std::io::BufReader;
 
-pub mod scene;
-pub mod renderer;
 pub mod primitive;
-
+pub mod renderer;
+pub mod scene;
 
 fn main() {
     //  Rendering images
@@ -17,7 +16,6 @@ fn main() {
     let image = render(&scene);
 
     image.save("rendered/rendered2.tiff"); // Change this line for
-
 
     // Rendering videos
     /*

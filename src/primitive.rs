@@ -1,6 +1,6 @@
-use serde::Deserialize;
-use glam::{Vec3, Vec3A};
 use crate::renderer::Ray;
+use glam::{Vec3, Vec3A};
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Sphere {
@@ -9,7 +9,7 @@ pub struct Sphere {
     pub diffuse: Vec3,
     pub specular: Vec3,
     pub ambient: Vec3,
-    pub mirror: bool
+    pub mirror: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -56,7 +56,7 @@ impl Renderable for Sphere {
         if c > 0.0 && b > 0.0 {
             return None;
         }
-        let discr = b*b - c;
+        let discr = b * b - c;
         if discr < 0.0 {
             return None;
         }

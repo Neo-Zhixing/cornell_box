@@ -1,7 +1,7 @@
-use crate::scene::Scene;
-use image::{ImageBuffer, RgbImage, RgbaImage};
-use glam::{Vec3A, Vec3};
 use crate::primitive::Renderable;
+use crate::scene::Scene;
+use glam::{Vec3, Vec3A};
+use image::{ImageBuffer, RgbImage, RgbaImage};
 
 mod raygen;
 
@@ -116,7 +116,7 @@ pub fn render_fragment(scene: &Scene, ray: Ray, depth: u8) -> Vec3A {
 
         illumination += diffuse_shaded_color + specular_shaded_color;
     }
-    illumination /= (scene.lights.len() ) as f32;
+    illumination /= (scene.lights.len()) as f32;
 
     if depth == 0 || !hit.mirrored {
         return illumination;
@@ -124,7 +124,7 @@ pub fn render_fragment(scene: &Scene, ray: Ray, depth: u8) -> Vec3A {
     // mirrored surfaces are spheres
     let reflected_ray = Ray {
         origin: hitpoint_offset,
-        dir: reflect_ray(-ray.dir, hit.normal).normalize()
+        dir: reflect_ray(-ray.dir, hit.normal).normalize(),
     };
     illumination = (illumination + render_fragment(scene, reflected_ray, depth - 1)) / 2.0;
     return illumination;
@@ -134,5 +134,5 @@ pub fn render(scene: &Scene) -> RgbaImage {
     let image = raygen::raygen(scene, |ray| {
         render_fragment(scene, ray, scene.max_depth).into()
     });
-    return image
+    return image;
 }
