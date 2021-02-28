@@ -27,28 +27,23 @@ impl Sphere {
     // Returns t and surface normal
     pub(crate) fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3)> {
         debug_assert!(ray.dir.is_normalized());
-        let o: Vec3A = ray.origin.into();
-        let d: Vec3A = ray.dir.into();
 
-        let c: Vec3A = self.position.into();
-
-        let b = d * (o - c);
-        let b: f32 = 2.0 * (b.x + b.y + b.z);
-        let c = (o - c).length_squared() - self.radius * self.radius;
-
-        let discriminant: f32 = b*b - 4.0*c;
-        if discriminant < 0.0 {
+        let p: Vec3A = self.position.into();
+        let m: Vec3A = ray.origin - p;
+        let b = m.dot(ray.dir);
+        let c = m.dot(m) - self.radius * self.radius;
+        if c > 0.0 && b > 0.0 {
             return None;
         }
-        let discriminant_sqrt = discriminant.sqrt();
-        let mut t1 = -b - discriminant_sqrt;
-        let mut t2 = -b + discriminant_sqrt;
-        if t2 <= 0.0 {
+        let discr = b*b - c;
+        if discr < 0.0 {
             return None;
         }
-        let hitpoint = ray.origin + t2 * ray.dir;
-        let normal = hitpoint - self.position.into();
-        Some((t2, normal.into()))
+        let t = -b - discr.sqrt();
+        let t = t.max(0.0);
+        let hitpoint = ray.origin + t * ray.dir;
+        let normal = hitpoint - p;
+        Some((t, normal.into()))
     }
 }
 

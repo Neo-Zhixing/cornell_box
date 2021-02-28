@@ -25,7 +25,7 @@ pub fn first_intersection(scene: &Scene, ray: Ray) -> Vec3 {
         }
         // regular shading
         z = t;
-        pixel = sphere.diffuse / 255.0;
+        pixel = sphere.diffuse;
     }
     for quad in scene.quads.iter() {
         let intersection = quad.intersect(&ray);
@@ -39,7 +39,7 @@ pub fn first_intersection(scene: &Scene, ray: Ray) -> Vec3 {
             continue;
         }
         z = t;
-        pixel = quad.diffuse / 255.0;
+        pixel = quad.diffuse;
     }
     pixel
 }
