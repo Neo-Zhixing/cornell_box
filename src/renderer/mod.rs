@@ -24,9 +24,9 @@ pub fn first_intersection(scene: &Scene, ray: Ray) -> Vec3 {
             continue;
         }
         // regular shading
+        z = t;
         pixel = sphere.diffuse / 255.0;
     }
-
     for quad in scene.quads.iter() {
         let intersection = quad.intersect(&ray);
         if intersection.is_none() {
@@ -34,9 +34,11 @@ pub fn first_intersection(scene: &Scene, ray: Ray) -> Vec3 {
         }
         let t = intersection.unwrap();
 
+        assert!(t > 0.0);
         if t >= z {
             continue;
         }
+        z = t;
         pixel = quad.diffuse / 255.0;
     }
     pixel

@@ -28,9 +28,7 @@ pub struct Scene {
 #[derive(Debug, Deserialize)]
 pub struct Camera {
     pub position: Vec3,
-    pub near: f32,
     pub direction: Vec3,
-    pub far: f32,
     pub fov: f32,
 }
 

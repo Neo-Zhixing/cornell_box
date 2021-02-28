@@ -28,15 +28,17 @@ pub fn raygen<F>(scene: &Scene, fragment: F) -> RgbaImage
             let u: Vec3A = v.cross(l); // u should already be normalized
 
             let av = aspect_ratio * v;
-            let dl = scene.camera.near * l;
+            let fov = (scene.camera.fov / 180.0) * std::f32::consts::PI;
+            let d = aspect_ratio / (fov / 2.0).tan();
+            let dl = d * l;
 
             let ll: Vec3A = eye
-                + scene.camera.near * l
-                - aspect_ratio * v - u; // ray to the top left corner
+                + dl
+                - av + u; // ray to the top left corner
 
             let pixel_ndc = Vec2::new((x as f32 + 0.5) / width as f32, (y as f32 + 0.5) / height as f32);
 
-            let pixel = ll + 2.0 * av * pixel_ndc.x + 2.0 * u * pixel_ndc.y;
+            let pixel = ll + 2.0 * av * pixel_ndc.x - 2.0 * u * pixel_ndc.y;
             let dir = (pixel - eye).normalize();
             let ray = Ray {
                 origin: eye,

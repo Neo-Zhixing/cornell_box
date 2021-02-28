@@ -26,6 +26,7 @@ impl Sphere {
 
     // Returns t and surface normal
     pub(crate) fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3)> {
+        debug_assert!(ray.dir.is_normalized());
         let o: Vec3A = ray.origin.into();
         let d: Vec3A = ray.dir.into();
 
@@ -53,6 +54,7 @@ impl Sphere {
 
 impl Quad {
     pub(crate) fn intersect(&self, ray: &Ray) -> Option<f32> {
+        debug_assert!(ray.dir.is_normalized());
         let a: Vec3A = self.positions[0].into();
         let b: Vec3A = self.positions[1].into();
         let c: Vec3A = self.positions[2].into();
