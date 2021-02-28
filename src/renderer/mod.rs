@@ -1,6 +1,7 @@
 use crate::scene::Scene;
 use image::{ImageBuffer, RgbImage, RgbaImage};
 use glam::{Vec3A, Vec3};
+use crate::primitive::Renderable;
 
 mod raygen;
 
@@ -10,36 +11,29 @@ pub struct Ray {
     pub dir: Vec3A,
 }
 
+pub fn render_object<T: Renderable>(object: &T, ray: &Ray, z: &mut f32, pixel: &mut Vec3) {
+    let intersection = object.intersect(&ray);
+    if intersection.is_none() {
+        return;
+    }
+    let (t, normal) = intersection.unwrap();
+    assert!(t > 0.0);
+    if t >= *z {
+        return;
+    }
+    // regular shading
+    *z = t;
+    *pixel = object.get_diffuse();
+}
+
 pub fn first_intersection(scene: &Scene, ray: Ray) -> Vec3 {
     let mut pixel: Vec3 = scene.background;
     let mut z: f32 = f32::INFINITY; // 1 is farthest distance
     for sphere in scene.spheres.iter() {
-        let intersection = sphere.intersect(&ray);
-        if intersection.is_none() {
-            continue;
-        }
-        let (t, normal) = intersection.unwrap();
-        assert!(t > 0.0);
-        if t >= z {
-            continue;
-        }
-        // regular shading
-        z = t;
-        pixel = sphere.diffuse;
+        render_object(sphere, &ray, &mut z, &mut pixel);
     }
     for quad in scene.quads.iter() {
-        let intersection = quad.intersect(&ray);
-        if intersection.is_none() {
-            continue;
-        }
-        let t = intersection.unwrap();
-
-        assert!(t > 0.0);
-        if t >= z {
-            continue;
-        }
-        z = t;
-        pixel = quad.diffuse;
+        render_object(quad, &ray, &mut z, &mut pixel);
     }
     pixel
 }
