@@ -94,7 +94,7 @@ pub fn render_fragment(scene: &Scene, ray: Ray, depth: u8) -> Vec3A {
         return scene.background.into();
     }
     let hit = hit.unwrap();
-    let hitpoint_offset = hit.hitpoint + hit.normal * 0.01;
+    let hitpoint_offset = hit.hitpoint + hit.normal * 0.1;
 
     let mut illumination: Vec3A = hit.ambient.into();
     for light in scene.lights.iter() {
@@ -103,23 +103,28 @@ pub fn render_fragment(scene: &Scene, ray: Ray, depth: u8) -> Vec3A {
             continue;
         }
         let light_diffuse_color: Vec3A = light.diffuse.into();
+        let light_specular_color: Vec3A = light.specular.into();
         let light_dir: Vec3A = light_position - hit.hitpoint;
         let light_dir: Vec3A = light_dir.normalize();
-        let diffuse_shaded_color: Vec3A = hit.normal.dot(light_dir) * hit.diffuse * light_diffuse_color;
-        illumination += diffuse_shaded_color;
+        let lambertian = hit.normal.dot(light_dir);
+        let diffuse_shaded_color: Vec3A = lambertian * hit.diffuse * light_diffuse_color;
+
+        let reflect_dir = reflect_ray(-light_dir, hit.normal);
+        let spec_angle = reflect_dir.dot(ray.dir);
+        let specular = spec_angle.powf(scene.shininess);
+        let specular_shaded_color: Vec3A = hit.specular * specular * light_specular_color;
+
+        illumination += diffuse_shaded_color + specular_shaded_color;
     }
-    illumination /= (scene.lights.len() + 1) as f32;
+    illumination /= (scene.lights.len() ) as f32;
 
     if depth == 0 || !hit.mirrored {
         return illumination;
     }
     // mirrored surfaces are spheres
-    if hit.normal.dot(ray.dir) > 0.00 {
-        return illumination;
-    }
     let reflected_ray = Ray {
         origin: hitpoint_offset,
-        dir: reflect_ray(ray.dir, hit.normal)
+        dir: reflect_ray(-ray.dir, hit.normal).normalize()
     };
     illumination = (illumination + render_fragment(scene, reflected_ray, depth - 1)) / 2.0;
     return illumination;
