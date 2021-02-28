@@ -24,7 +24,7 @@ pub struct Quad {
 pub trait Renderable {
     fn get_diffuse(&self) -> Vec3;
     fn get_ambient(&self) -> Vec3;
-    fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3)>;
+    fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3A)>;
 }
 
 impl Renderable for Sphere {
@@ -35,7 +35,7 @@ impl Renderable for Sphere {
         self.ambient
     }
     // Returns t and surface normal
-    fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3)> {
+    fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3A)> {
         debug_assert!(ray.dir.is_normalized());
 
         let p: Vec3A = self.position.into();
@@ -53,7 +53,7 @@ impl Renderable for Sphere {
         let t = t.max(0.0);
         let hitpoint = ray.origin + t * ray.dir;
         let normal = (hitpoint - p).normalize();
-        Some((t, normal.into()))
+        Some((t, normal))
     }
 }
 
@@ -64,7 +64,7 @@ impl Renderable for Quad {
     fn get_ambient(&self) -> Vec3 {
         self.ambient
     }
-    fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3)> {
+    fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3A)> {
         debug_assert!(ray.dir.is_normalized());
         let a: Vec3A = self.positions[0].into();
         let b: Vec3A = self.positions[1].into();
@@ -92,6 +92,6 @@ impl Renderable for Quad {
         }
         let t = f * q.dot(tmp2);
         let normal = p.cross(q).normalize();
-        return Some((t, normal.into()));
+        return Some((t, normal));
     }
 }
