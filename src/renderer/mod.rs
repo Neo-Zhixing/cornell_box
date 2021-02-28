@@ -18,6 +18,12 @@ pub struct Hit {
     specular: Vec3A,
     hitpoint: Vec3A,
     t: f32,
+    mirrored: bool,
+}
+
+#[inline]
+pub fn reflect_ray(dir: Vec3A, normal: Vec3A) -> Vec3A {
+    dir - 2.0 * (dir.dot(normal)) * normal
 }
 
 pub fn first_intersection(scene: &Scene, ray: Ray) -> Option<(Hit)> {
@@ -28,6 +34,7 @@ pub fn first_intersection(scene: &Scene, ray: Ray) -> Option<(Hit)> {
         specular: Vec3A::zero(),
         t: 0.0,
         hitpoint: Vec3A::zero(),
+        mirrored: false,
     };
     let mut z: f32 = f32::INFINITY; // 1 is farthest distance
 
@@ -45,6 +52,8 @@ pub fn first_intersection(scene: &Scene, ray: Ray) -> Option<(Hit)> {
         hit.normal = normal;
         hit.diffuse = object.get_diffuse().into();
         hit.ambient = object.get_ambient().into();
+        hit.specular = object.get_specular().into();
+        hit.mirrored = object.get_mirrored();
     }
     for sphere in scene.spheres.iter() {
         intersect(sphere, ray, &mut z, &mut hit);
@@ -79,28 +88,46 @@ pub fn occluded(scene: &Scene, origin: Vec3A, destination: Vec3A) -> bool {
     return false;
 }
 
+pub fn render_fragment(scene: &Scene, ray: Ray, depth: u8) -> Vec3A {
+    let hit = first_intersection(scene, ray);
+    if hit.is_none() {
+        return scene.background.into();
+    }
+    let hit = hit.unwrap();
+    let hitpoint_offset = hit.hitpoint + hit.normal * 0.01;
+
+    let mut illumination: Vec3A = hit.ambient.into();
+    for light in scene.lights.iter() {
+        let light_position: Vec3A = light.position.into();
+        if occluded(scene, hitpoint_offset, light_position) {
+            continue;
+        }
+        let light_diffuse_color: Vec3A = light.diffuse.into();
+        let light_dir: Vec3A = light_position - hit.hitpoint;
+        let light_dir: Vec3A = light_dir.normalize();
+        let diffuse_shaded_color: Vec3A = hit.normal.dot(light_dir) * hit.diffuse * light_diffuse_color;
+        illumination += diffuse_shaded_color;
+    }
+    illumination /= (scene.lights.len() + 1) as f32;
+
+    if depth == 0 || !hit.mirrored {
+        return illumination;
+    }
+    // mirrored surfaces are spheres
+    if hit.normal.dot(ray.dir) > 0.00 {
+        return illumination;
+    }
+    let reflected_ray = Ray {
+        origin: hitpoint_offset,
+        dir: reflect_ray(ray.dir, hit.normal)
+    };
+    illumination = (illumination + render_fragment(scene, reflected_ray, depth - 1)) / 2.0;
+    return illumination;
+}
+
 pub fn render(scene: &Scene) -> RgbaImage {
     let image = raygen::raygen(scene, |ray| {
-        let hit = first_intersection(scene, ray);
-        if hit.is_none() {
-            return scene.background;
-        }
-        let hit = hit.unwrap();
-
-        let mut illumination: Vec3A = hit.ambient.into();
-        for light in scene.lights.iter() {
-            let light_position: Vec3A = light.position.into();
-            if occluded(scene, hit.hitpoint + hit.normal * 0.01, light_position) {
-                continue;
-            }
-            let light_diffuse_color: Vec3A = light.diffuse.into();
-            let light_dir: Vec3A = light_position - hit.hitpoint;
-            let light_dir: Vec3A = light_dir.normalize();
-            let diffuse_shaded_color: Vec3A = hit.normal.dot(light_dir).abs() * hit.diffuse * light_diffuse_color;
-            illumination += diffuse_shaded_color;
-        }
-        illumination /= (scene.lights.len() + 1) as f32;
-        return illumination.into();
+        render_fragment(scene, ray, scene.max_depth).into()
     });
     return image
 }

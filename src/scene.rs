@@ -17,7 +17,7 @@ pub struct Scene {
     pub shininess: f32,
     pub antialias: u32,
     pub background: Vec3,
-    pub max_depth: u32,
+    pub max_depth: u8,
     pub resolution: (u32, u32),
     pub lights: Vec<Light>,
     pub spheres: Vec<Sphere>,

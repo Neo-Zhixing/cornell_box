@@ -24,6 +24,8 @@ pub struct Quad {
 pub trait Renderable {
     fn get_diffuse(&self) -> Vec3;
     fn get_ambient(&self) -> Vec3;
+    fn get_specular(&self) -> Vec3;
+    fn get_mirrored(&self) -> bool;
     fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3A)>;
 }
 
@@ -34,6 +36,15 @@ impl Renderable for Sphere {
     fn get_ambient(&self) -> Vec3 {
         self.ambient
     }
+
+    fn get_specular(&self) -> Vec3 {
+        self.specular
+    }
+
+    fn get_mirrored(&self) -> bool {
+        true
+    }
+
     // Returns t and surface normal
     fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3A)> {
         debug_assert!(ray.dir.is_normalized());
@@ -64,6 +75,15 @@ impl Renderable for Quad {
     fn get_ambient(&self) -> Vec3 {
         self.ambient
     }
+
+    fn get_specular(&self) -> Vec3 {
+        self.specular
+    }
+
+    fn get_mirrored(&self) -> bool {
+        false
+    }
+
     fn intersect(&self, ray: &Ray) -> Option<(f32, Vec3A)> {
         debug_assert!(ray.dir.is_normalized());
         let a: Vec3A = self.positions[0].into();
